@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+data/*.db*
+.env
+.venv/
+.coverage
+test-results/
