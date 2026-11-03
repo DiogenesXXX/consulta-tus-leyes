@@ -1,0 +1,7 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {"name":"Backend Python + frontend","type":"debugpy","request":"launch","program":"${workspaceFolder}/backend/server.py","cwd":"${workspaceFolder}","console":"integratedTerminal","justMyCode":true},
+    {"name":"Frontend en Chrome (servidor encendido)","type":"chrome","request":"launch","url":"http://127.0.0.1:8000","webRoot":"${workspaceFolder}/frontend"}
+  ]
+}
