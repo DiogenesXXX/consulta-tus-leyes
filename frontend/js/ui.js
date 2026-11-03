@@ -1,0 +1,19 @@
+export const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+export const asset = name => `/assets/${name}`;
+export const icon = (name, extra='') => `<img class="icon ${extra}" src="${asset(name+'.svg')}" alt="" aria-hidden="true">`;
+export const go = (path, params={}) => { const q = new URLSearchParams(params).toString(); location.hash = `#/${path}${q?'?'+q:''}`; };
+export const href = (path, params={}) => `#/${path}${Object.keys(params).length?'?'+new URLSearchParams(params):''}`;
+export const date = value => value ? new Intl.DateTimeFormat('es-PE',{day:'numeric',month:'short',year:'numeric'}).format(new Date(value+'T12:00:00')) : 'Por definir';
+export const brand = () => `<a class="brand" href="#/home"><span class="brand-mark"><img src="${asset('logo.svg')}" alt=""></span><span>Consulta<br>tus leyes</span></a>`;
+export function header(){ return `<header class="topbar"><a class="brand" href="#/home"><img src="${asset('logo.svg')}" alt=""><span>Consulta<br>tus leyes</span></a><a class="help" href="#/help">¿Necesita ayuda?</a></header>`; }
+export function nav(active){ return `<nav class="nav" aria-label="Navegación principal">${[['home','inicio','Inicio'],['search','buscar','Buscar'],['norms','normas','Normas'],['stats','cifras','Cifras'],['space','espacio','Mi espacio']].map(([route,svg,label])=>`<a href="${route==='norms'?'#/search?kind=ley':'#/'+route}" class="${active===route?'active':''}" ${active===route?'aria-current="page"':''}>${icon('nav-'+svg)}<span>${label}</span></a>`).join('')}</nav>`; }
+export function shell(content,active='home',back=''){ return `${header()}${back?`<div class="backbar"><a href="${esc(back)}"><img class="back-icon" src="${asset('arrow.svg')}" alt=""> Volver</a></div>`:''}<main class="page" id="main" tabindex="-1">${content}<p class="demo-strip">Demostración · contenido legislativo ficticio</p></main>${nav(active)}`; }
+export function card(doc){ return `<a class="card card-link" href="#/doc/${esc(doc.id)}"><div class="row spread"><span class="meta">${esc(doc.number)}</span><span class="pill ${doc.chamber==='Senado'?'blue':''}">${esc(doc.status)}</span></div><h3>${esc(doc.title)}</h3><p class="muted">${esc(doc.summary)}</p><div class="card-foot"><span>${esc(doc.sector)} · ${esc(doc.chamber)}</span><span>${date(doc.date)}</span></div></a>`; }
+export const empty = (title,body,action='<a class="btn secondary" href="#/search">Explorar el catálogo</a>') => `<div class="empty"><h3>${esc(title)}</h3><p>${esc(body)}</p>${action}</div>`;
+export const field = (name,label,type='text',opts='') => `<label class="field">${label}<input name="${name}" type="${type}" ${opts}></label>`;
+export const errorBox = '<div class="form-error" role="alert" tabindex="-1"></div>';
+export function motion(file){const paused=matchMedia('(prefers-reduced-motion: reduce)').matches;return `<div class="motion-wrap"><img class="hero-gif" data-gif="${file}" src="${asset(file+(paused?'.png':'.gif'))}" alt="Ilustración de ciudadanía y acceso a información"><button class="motion-toggle" data-action="motion" aria-pressed="${paused}">${paused?'Reproducir':'Pausar'} animación</button></div>`;}
+let toastTimer;
+export function toast(message,success=true){clearTimeout(toastTimer);document.querySelector('#toast').innerHTML=`<div class="toast-card">${success?`<img src="${asset('03_cuenta_lista'+(matchMedia('(prefers-reduced-motion: reduce)').matches?'.png':'.gif'))}" alt="">`:''}<span>${esc(message)}</span><button data-action="dismiss-toast" aria-label="Cerrar aviso">×</button></div>`;toastTimer=setTimeout(()=>document.querySelector('#toast').replaceChildren(),6000);}
+export function modal(content){const el=document.querySelector('#modal');el.innerHTML=content;if(!el.open)el.showModal();return el;}
+export function closeModal(){document.querySelector('#modal').close();}
